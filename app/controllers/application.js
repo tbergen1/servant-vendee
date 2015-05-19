@@ -100,8 +100,9 @@ var index = function(req, res) {
 
         console.time('ServantAPI: Calls');
         async.parallel(tasks, function(error, result) {
+            console.log('HERERERERE')
             console.timeEnd('ServantAPI: Calls');
-            res.render('themes/one/vendee', vendee_variables);
+            res.render('vendee/vendee', vendee_variables);
         });
 
     };
@@ -167,6 +168,8 @@ var loadVendeeByServant = function(req, res, next) {
  */
 
 var saveSettings = function(req, res, next) {
+
+    console.log(req.body)
 
     // Show Vendee
     Vendee.showVendee({

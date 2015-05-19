@@ -56,7 +56,7 @@ tr,
 th,
 td {
     border: 0;
-    font-family: inherit;
+    font-family: 'Lato', sans-serif;
     font-size: 100%;
     font-style: inherit;
     font-weight: inherit;
@@ -150,8 +150,119 @@ a img {
 }
 
 
+/* Admin Menu */
 
-/* Modal Styles */
+#admin-menu {
+    position: fixed;
+    z-index: 0;
+    float: left;
+    font-family: 'Lato', sans-serif;
+    font-weight: 200;
+    width: 260px;
+    min-height: 100vh;
+    height: auto;
+    background: #555555;
+    padding: 0px;
+    color: #fff;
+    overflow: hidden;
+}
+
+#admin-menu-inner {
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+    padding: 10px 10px 10px 20px;
+}
+
+#admin-menu .link {
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0px;
+}
+
+#admin-menu .link:hover {
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+}
+
+#admin-menu .signout {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#admin-menu a {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+#admin-menu a:hover {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 1);
+}
+
+#admin-menu .menu-label {
+    font-size: 12px;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+    margin-bottom: 4px;
+    margin-top: 15px;
+}
+
+#admin-menu input,
+#admin-menu textarea,
+#admin-menu select {
+    width: 90%;
+    max-width: 90%;
+    margin: 0px auto;
+    text-align: center;
+    color:rgba(0,0,0,0.9);
+    font-size:16px;
+}
+
+#admin-menu input:focus,
+#admin-menu textarea:focus {
+    background-color: #fff;
+    border: 1px solid #ffffff;
+    color: #333;
+}
+
+#admin-menu .menu-section {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 6px;
+    line-height: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+#admin-menu .menu-smalltext {
+    font-size: 11px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#admin-menu .menu-section .logo {
+    max-height: 80px;
+    max-width: 80%;
+}
+
+#admin-menu .theme-arrow {
+    font-size: 60px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#admin-menu .theme-arrow:hover {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 1);
+}
+
+
+
+/* Modals */
 
 #modal-background {
     position: fixed;
@@ -300,3 +411,43 @@ a img {
     font-size: 18px!important;
     padding: 14px 30px!important;
 }
+
+/* Vendee Core Styles */
+
+#vendee-container {
+    position: absolute;
+    min-width: 100%;
+    min-height: 100vh;
+    z-index: 1;
+}
+
+.menu-link {
+    position: relative;
+    z-index: 1000;
+    top: -5px;
+    left: 0px;
+    font-size: 50px
+}
+
+.menu-link:hover {
+    cursor: pointer;
+}
+
+
+/* Vendee Themes */
+
+.theme-white {
+    background:#ffffff;
+}
+
+.theme-white a {
+    color:rgba(0,0,0,0.3);
+}
+
+.theme-white a:hover {
+    color:rgba(0,0,0,0.5);
+}
+
+
+
+

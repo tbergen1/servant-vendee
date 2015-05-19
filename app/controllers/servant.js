@@ -47,8 +47,6 @@ var servantConnectCallback = function(req, res, next) {
                     error: error
                 });
 
-                console.log(error, data);
-
                 /**
                  * Render Vendee of User's first Servant
                  */
@@ -56,8 +54,6 @@ var servantConnectCallback = function(req, res, next) {
                 // TODO:  If User has not authorized any Servants, render error page via the HelpersApp.renderErrorPage()
 
                 Vendee.listVendeesByServant(response.servants[0]._id, function(error, vendees) {
-
-                    console.log(error, vendees);
 
                     if (error) return res.status(500).json({
                         error: error
@@ -76,8 +72,6 @@ var servantConnectCallback = function(req, res, next) {
 
                     // Servant doesn't have a vendee, create one
                     HelpersApp.createVendee(response.servants[0], user.servant_user_id, function(error, vendee) {
-
-                        console.log(error, vendee)
 
                         if (error) return res.status(500).json({
                             error: error

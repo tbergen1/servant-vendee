@@ -18,8 +18,8 @@ Theme.data.criteria = {
     page: 2 // First page of posts is fetched server-side for SEO reasons
 };
 Theme.data.menu = false;
-Theme.data.loading_posts = false;
-Theme.data.more_posts = true;
+Theme.data.loading_products = false;
+Theme.data.more_products = true;
 
 
 $(document).ready(function() {
@@ -38,19 +38,16 @@ Theme.initialize = function() {
     var _this = this;
     Theme.data.themes = Theme.data.themes.split(','); // These were added as one long string.  Convert to array.
 
-    // Initialize Blog Posts
+    // Initialize Vendee Products
     if (!Theme.data.article_id) {
 
         // Listener: Window Scroll
         $(window).scroll(function() {
             var difference = $('#content').height() - $(window).scrollTop();
-            if (difference < 1500) return _this.listBlogPosts();
+            if (difference < 1500) return _this.listProducts();
         });
 
     }
-
-    // Initialize Popular Posts Widget
-    if (Theme.data.popular_posts_enabled) _this.listPopularPosts();
 
     // Initialize Popup
     if (Theme.data.popup && Theme.data.popup !== 'none') _this.initializePopup();
@@ -61,38 +58,38 @@ Theme.initialize = function() {
 };
 
 
-Theme.listBlogPosts = function(callback) {
+Theme.listProducts = function(callback) {
     var _this = this;
 
-    // Check If More Posts Are Available
-    if (_this.data.loading_posts || !_this.data.more_posts) return;
+    // Check If More Products Are Available
+    if (_this.data.loading_products || !_this.data.more_products) return;
 
     // Set Loading True
-    _this.data.loading_posts = true;
+    _this.data.loading_products = true;
     $('.loading').show();
 
     // Query Servant
-    Servant.queryArchetypes(Theme.data.access_token, Theme.data.servant_id, 'blog_post', _this.data.criteria, function(error, response) {
+    Servant.queryArchetypes(Theme.data.access_token, Theme.data.servant_id, 'product', _this.data.criteria, function(error, response) {
 
         if (error) console.log(error);
 
         // Hide Loading Notice
         $('.loading').hide();
 
-        // Render Each Post
+        // Render Each Product
         for (i = 0; i < response.records.length; i++) {
-            _this.renderBlogPostPreview(response.records[i])
+            _this.renderProduct(response.records[i])
         };
 
         // Increment Page
         _this.data.criteria.page = _this.data.criteria.page + 1;
 
         // Check If More Posts
-        if (response.records.length < 10) _this.data.more_posts = false;
+        if (response.records.length < 10) _this.data.more_products = false;
 
         // Set Loading False
         setTimeout(function() {
-            _this.data.loading_posts = false;
+            _this.data.loading_products = false;
         }, 1000);
 
         // Callback
@@ -103,7 +100,7 @@ Theme.listBlogPosts = function(callback) {
 
 
 
-Theme.renderBlogPostPreview = function(post) {
+Theme.renderProducts = function(post) {
     var _this = this;
     // Open Article Element
     var html = '<article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">';
@@ -123,45 +120,6 @@ Theme.renderBlogPostPreview = function(post) {
     // Apped HTML
     $('#main').append(html);
 };
-
-
-
-Theme.listPopularPosts = function(articleID) {
-    // Defaults
-    var _this = this;
-
-    Servant.queryArchetypes(Theme.data.access_token, Theme.data.servant_id, 'blog_post', {
-        query: {
-            '_id': {
-                $in: Theme.data.popular_posts
-            }
-        },
-        sort: {},
-        page: 1
-    }, function(response) {
-        console.log("Popular Posts Loaded: ", response);
-
-        // Loop Through Records & Render Them In Correct Order
-        for (j = 0; j < Theme.data.popular_posts.length; j++) {
-            for (i = 0; i < response.records.length; i++) {
-                if (Theme.data.popular_posts[j] === response.records[i]._id) _this.renderPopularPost(response.records[i]);
-            }
-        }
-
-        // Hide Loading Notice
-        $('.loading-popular-posts').hide();
-
-    }, function(error) {
-        console.log(error);
-    });
-};
-
-
-Theme.renderPopularPost = function(post) {
-    // Themeend HTML
-    $('#popular-posts').Themeend('<li><a rel="bookmark" href="/articles/' + post._id + '">' + post.title + '</a></li>');
-};
-
 
 Theme.loadLogoImage = function(imageID) {
 
@@ -195,7 +153,7 @@ Theme.initializePopup = function() {
 
         // Set Timer
         setTimeout(function() {
-            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.blog_subdomain)) Theme.showModal('#modal-popup');
+            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
         }, Theme.data.popup_timer ? Theme.data.popup_timer * 1000 : 10000);
 
     }
@@ -208,7 +166,7 @@ Theme.initializePopup = function() {
 
         // Listener: Mouse Leave Document
         document.body.addEventListener('mouseleave', function() {
-            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.blog_subdomain)) Theme.showModal('#modal-popup');
+            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
         });
 
     }
@@ -235,7 +193,7 @@ Theme.savePopupEmail = function() {
     $('#form-hide').hide();
 
     var data = {
-        subdomain: Theme.data.blog_subdomain,
+        subdomain: Theme.data.vendee_subdomain,
         email: email
     }
 
@@ -257,17 +215,17 @@ Theme.savePopupEmail = function() {
         $('#form-saving').hide();
         $('#form-success').show();
         setTimeout(function() {
-            return _this.hideModal('sp_popup_' + Theme.data.blog_subdomain, 'seen', 604800);
+            return _this.hideModal('sp_popup_' + Theme.data.vendee_subdomain, 'seen', 604800);
         }, 1700);
     });
 };
-
 
 
 Theme.showModal = function(modalID) {
     $('#modal-background').show();
     $(modalID).show();
 };
+
 
 Theme.hideModal = function(cookieKey, cookieValue, cookieExpires) {
     var _this = this;

@@ -6,13 +6,14 @@
 
 <body>
 
-    <!-- Modal Background -->
+    <!-- Modals -->
+
     <div id="modal-background" class="modal" style="display:none;">
 
         <!-- User Authenticated: Modal Introduction -->
         <div id="modal-welcome" class="modal animate-zoom-in" style="display:none;">
             <p style="margin-bottom:15px;">
-                <img src="/assets/img/logo_light.png">
+                <img src="/assets/img/logo_square.png">
             </p>
             <h1>Welcome To Your Vendee!</h1>
             <table>
@@ -73,8 +74,8 @@
     </div>
 
 
-
     <!-- User Authenticated: Admin Menu -->
+
     <% if (authenticated) { %>
         <div id="admin-menu">
             <div id="admin-menu-inner">
@@ -82,7 +83,7 @@
                 <a class="signout" href="/api/logout"><i class="ion-power"></i></a>
                 <!-- Logo -->
                 <div class="menu-section">
-                    <img class="logo" src="/assets/img/logo_dark.png" draggable="false">
+                    <img class="logo" src="/assets/img/logo_square.png" draggable="false">
                 </div>
 
                 <p class="menu-label">
@@ -107,7 +108,7 @@
                         <input type="text" class="vendee-option-text" name="vendee_title" placeholder="Vendee Title" value="<%= vendee.vendee_title %>">
                     </div>
                     <div class="menu-section">
-                        <textarea  class="vendee-option-text" name="vendee_description" placeholder="vendee Description"><%= vendee.vendee_description %></textarea>
+                        <textarea  class="vendee-option-text" name="vendee_description" placeholder="Vendee Description"><%= vendee.vendee_description %></textarea>
                     </div>
 
                     <!-- Logo Image -->
@@ -192,184 +193,35 @@
     <% } %>
 
 
-    <!-- Main Site -->
-    <div class="site <%= vendee.theme %>" data-theme="<%= vendee.theme %>" id="page">
+    <!-- Vendee -->
 
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar" style="top:0px;">
-
+    <div id="vendee-container" class="<%= vendee.theme %>">
+        <div id="vendee" class="container">
+            
             <% if (authenticated) { %>
                 <a class="menu-link">
                     <i class="ion-gear-a" onclick="Theme.admin.toggleMenu()"></i>
                 </a>
             <% } %>
 
-            <!-- Header -->
-            <header class="site-header" id="masthead">
-
-                <!-- Branding -->
-                <div class="site-branding">
-
-                    <!-- Back Link Top -->
-                    <% if (article_id) { %>
-                        <p id="backlink-top">
-                            <a class="outer-link" href="/">
-                                <i class="ion-arrow-left-c"></i> Back to all articles
-                            </a>
-                        </p>
-                    <% } %>
-
-                    <!-- Logo Image -->
-                    <a href="/">
-                        <img class="logo-image animate-zoom-in" draggable="false" 
-                            <% if (!vendee.logo_image) { %>style='display:none;'<% } %>  
-                            <% if (preload.logo) { %>src='<%= preload.logo.resolution_medium %>'<% } %>  
-                        >
-                    </a>
-
-                    <!-- Title & Description -->
-                    <h1> 
-                        <a href="/" class="site-title">
-                            <%= vendee.vendee_title %> 
-                        </a>
-                    </h1>
-                    <p class="site-description">
-                        <%= vendee.vendee_description %>
-                    </p>
-
-                    <!-- Social Icons -->
-                    <table class="social-widget">
-                        <tbody>
-                            <tr>
-                                <td <% if (!vendee.url_home) { %> style="display:none;" <% } %> >
-                                    <a class="social url_home" href="<%= vendee.url_home %>" target="_blank">
-                                        <i class="icon ion-android-home"></i>
-                                    </a>
-                                </td>
-                                <td <% if (!vendee.url_twitter) { %> style="display:none;" <% } %> >
-                                    <a class="social url_twitter" href="<%= vendee.url_twitter %>" target="_blank">
-                                        <i class="icon ion-social-twitter"></i>
-                                    </a>
-                                </td>
-                                <td <% if (!vendee.url_github) { %> style="display:none;" <% } %> >
-                                    <a class="social url_github" href="<%= vendee.url_github %>" target="_blank">
-                                        <i class="icon ion-social-github"></i>
-                                    </a>
-                                </td>
-                                <td <% if (!vendee.url_facebook) { %> style="display:none;" <% } %> >
-                                    <a class="social url_facebook" href="<%= vendee.url_facebook %>" target="_blank">
-                                        <i class="icon ion-social-facebook"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Back Link Bottom -->
-                    <% if (article_id) { %>
-                        <p id="backlink-bottom">
-                            <a class="outer-link" href="/">
-                                <i class="ion-arrow-left-c"></i> Back to all articles
-                            </a>
-                        </p>
-                    <% } %>
-                    
+            <div class="row">
+                <div class="six columns">
+                    <p><%= vendee.vendee_title %></p>
                 </div>
-            </header>
-
-            <!-- Secondary -->
-            <div class="secondary">
-                <!-- Popular Posts Widget -->
-                <% if (vendee.popular_posts) { %>
-                    <div class="widget">
-                        <h6 class="widget-title"> Popular Posts </h6>
-                        <p class="loading-popular-posts"> 
-                            Loading Popular Posts... 
-                        </p>
-                        <ul class="popular-posts" id="popular-posts"></ul>
-                    </div>
-                <% } %>
+                <div class="six columns">
+                    <p>asf</p>
+                </div>
             </div>
-
-        </div>
-
-        <!-- Site Content -->
-        <div class="site-content" id="content">
-            <div class="content-area" id="primary">
-                <main class="site-main" id="main">
-                   
-                    <!-- List vendee Post Previews -->
-                    <% if (!preload.error && !article_id) { %>
-
-                        <!-- If servant has vendee posts -->
-                        <% if (preload.posts && preload.posts.length) { %>
-                            <% for(i=0;i<preload.posts.length;i++) { %>
-                                <% var post = preload.posts[i] %>
-                                <article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">
-                                    <header class="entry-header">
-                                        <h1 class="entry-title" itemprop="name">
-                                            <a rel="bookmark" href="/articles/<%= post._id %>">
-                                                <%= post.title %>
-                                            </a>
-                                        </h1>
-                                    </header>
-                                    <div class="entry-content">
-                                        <p itemprop="description" itemprop="description">
-                                            <%= post.plaintext.substring(0, (post.plaintext.indexOf('.') > 0 ? post.plaintext.indexOf('.') : 100)) %>...
-                                        </p>
-                                    </div>
-                                </article>
-                            <% } %>
-                        <% } %>
-
-                    <% } %>
-
-                    <!-- List vendee Post -->
-                    <% if (!preload.error && article_id) { %>
-                        <% if (preload.post) { %>
-                            <% var post = preload.post %>
-                            <article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">
-                                <header class="entry-header">
-                                    <h1 class="entry-title" itemprop="name">
-                                        <%= post.title %>
-                                    </h1>
-                                </header>
-                                <div class="entry-content">
-                                    <%- post.html %>
-                                </div>
-                            </article>
-                        <% } %>
-                    <% } %>
-
-                    <!-- Error: No vendee Posts -->
-                    <% if (!preload.error && !article_id && !preload.posts.length) { %>
-                        <div class="notice">
-                            <h1>This Servant Has No vendee Posts!</h1>
-                            <p>Create some vendee posts <a href="https://www.servant.co/#!/<%= vendee.servant_id %>/archetypes/vendee_post" target="_blank" style="text-decoration:underline">in your Servant dashboard</a>, then refresh this page!</p>
-                        </div>
-                    <% } %>
-
-                    <!-- Error: vendee Post Missing -->
-                    <% if (preload.error && preload.error.code === 'Missing') { %>
-                        <div class="notice">
-                            <h1>vendee Post Missing!</h1>
-                            <p>Sorry, this vendee post could not be found</p>
-                            <p><a href="/"><i class="ion-arrow-left-c"></i> Go Back</a></p>
-                        </div>
-                    <% } %>
-
-                    <!-- Error: vendee Post Missing -->
-                    <% if (preload.error && preload.error.code === 'ServesError') { %>
-                        <div class="notice">
-                            <h1>This Servant Is Out Of Serves!</h1>
-                            <p>Go to your <a href="https://www.servant.co/#!/<%= vendee.servant_id %>/archetypes/vendee_post" target="_blank" style="text-decoration:underline">Servant dashboard</a> to get more serves, then refresh this page!</p>
-                        </div>
-                    <% } %>
-
-                </main>
+            <div class="row">
+                <div class="twelve columns">
+                    <p>asf</p>
+                    <p>asf</p>
+                    <p>asf</p>
+                    <p>asf</p>
+                </div>
             </div>
+            <div class="row"></div>
         </div>
-
     </div>
     <% include foot.ejs %>
 </body>

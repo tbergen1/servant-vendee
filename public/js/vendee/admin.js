@@ -43,7 +43,7 @@ Theme.admin = {
         });
 
         // Listener: Admin Menu Form Changes
-        $('.blog-option-text').keyup(function() {
+        $('.vendee-option-text').keyup(function() {
             return _this.processSettings();
         });
 
@@ -54,7 +54,7 @@ Theme.admin = {
 
         // Listener: Admin Menu Servant Select Change
         $('#servant-select').change(function() {
-            window.location.href = '/api/blog/servant/' + $('#servant-select').val();
+            window.location.href = '/api/vendee/servant/' + $('#servant-select').val();
         });
 
         // Listener: Infinite Scroll
@@ -64,7 +64,7 @@ Theme.admin = {
         });
 
         // Show Welcome Modal
-        if (!Theme.utilities.cookies.getItem('sp_welcome_' + Theme.data.blog_subdomain)) {
+        if (!Theme.utilities.cookies.getItem('sp_welcome_' + Theme.data.vendee_subdomain)) {
             setTimeout(function() {
                 Theme.showModal('#modal-welcome');
             }, 1000);
@@ -74,7 +74,7 @@ Theme.admin = {
 
     toggleMenu: function() {
 
-        $(".site").animate({
+        $("#vendee-container").animate({
             left: Theme.data.menu ? '0' : '260'
         }, {
             duration: 150,
@@ -110,7 +110,7 @@ Theme.admin = {
         var _this = this;
 
         // Create object of form values
-        var a = $('#blog-options').serializeArray();
+        var a = $('#vendee-options').serializeArray();
         var o = {};
         $.each(a, function() {
             if (o[this.name] !== undefined) {
@@ -130,8 +130,8 @@ Theme.admin = {
         }, 500);
 
         // Update DOM
-        $('.site-title').text(o.blog_title);
-        $('.site-description').text(o.blog_description);
+        $('.site-title').text(o.vendee_title);
+        $('.site-description').text(o.vendee_description);
         // Social Icons
         if (o.url_home && o.url_home !== '') $('.url_home').attr('href', o.url_home).parent().show();
         else $('.url_home').parent().hide();
@@ -146,14 +146,14 @@ Theme.admin = {
         else $("input[name='popup_timer']").show();
 
         // Remove Popup Cookie
-        Theme.utilities.cookies.removeItem('sp_popup_' + Theme.data.blog_subdomain);
+        Theme.utilities.cookies.removeItem('sp_popup_' + Theme.data.vendee_subdomain);
 
     },
 
 
     saveSettings: function(settings, callback) {
 
-        settings.subdomain = Theme.data.blog_subdomain;
+        settings.subdomain = Theme.data.vendee_subdomain;
 
         $.ajax({
             url: "/api/settings",

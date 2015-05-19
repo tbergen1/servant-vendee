@@ -58,7 +58,9 @@ else { vendee.host = 'http://' + vendee.subdomain + '.servantpress.io'; } %>
 <% if (environment === 'production') { %>
     <link rel="stylesheet" href="https://danelprrc5660.cloudfront.net/servant_press/<%= fingerprint %>/<%= fingerprint %>_one.min.css">
 <% } else { %>
-    <link rel="stylesheet" href="/assets/css/themes/one/one.css">
+    <link rel="stylesheet" href="assets/libs/skeleton/css/normalize.css">
+    <link rel="stylesheet" href="assets/libs/skeleton/css/skeleton.css">
+    <link rel="stylesheet" href="/assets/css/vendee.css">
 <% } %>
 
 <!-- Favicon -->

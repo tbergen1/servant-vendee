@@ -111,23 +111,23 @@ var Vendee = {
             params.ExpressionAttributeNames['#c'] = 'custom_domain';
             params.ExpressionAttributeValues[':custom_domain_val'] = servant_vendee.custom_domain.length ? servant_vendee.custom_domain : servant_vendee.subdomain + '.servantpress.io'; // Change this when domain changes
         }
-        // blog_title
-        if (servant_vendee.blog_title || servant_vendee.blog_title === '') {
-            params.UpdateExpression = params.UpdateExpression + ', #d = :blog_title_val';
-            params.ExpressionAttributeNames['#d'] = 'blog_title';
-            params.ExpressionAttributeValues[':blog_title_val'] = servant_vendee.blog_title.length ? servant_vendee.blog_title : null;
+        // vendee_title
+        if (servant_vendee.vendee_title || servant_vendee.vendee_title === '') {
+            params.UpdateExpression = params.UpdateExpression + ', #d = :vendee_title_val';
+            params.ExpressionAttributeNames['#d'] = 'vendee_title';
+            params.ExpressionAttributeValues[':vendee_title_val'] = servant_vendee.vendee_title.length ? servant_vendee.vendee_title : null;
         }
-        // blog_description
-        if (servant_vendee.blog_description || servant_vendee.blog_description === '') {
-            params.UpdateExpression = params.UpdateExpression + ', #e = :blog_description_val';
-            params.ExpressionAttributeNames['#e'] = 'blog_description';
-            params.ExpressionAttributeValues[':blog_description_val'] = servant_vendee.blog_description.length ? servant_vendee.blog_description : null;
+        // vendee_description
+        if (servant_vendee.vendee_description || servant_vendee.vendee_description === '') {
+            params.UpdateExpression = params.UpdateExpression + ', #e = :vendee_description_val';
+            params.ExpressionAttributeNames['#e'] = 'vendee_description';
+            params.ExpressionAttributeValues[':vendee_description_val'] = servant_vendee.vendee_description.length ? servant_vendee.vendee_description : null;
         }
-        // blog_keywords
-        if (servant_vendee.blog_keywords || servant_vendee.blog_keywords === '') {
-            params.UpdateExpression = params.UpdateExpression + ', #f = :blog_keywords_val';
-            params.ExpressionAttributeNames['#f'] = 'blog_keywords';
-            params.ExpressionAttributeValues[':blog_keywords_val'] = servant_vendee.blog_keywords.length ? servant_vendee.blog_keywords.toLowerCase().replace(/[^\w\s,]/gi, '') : null;
+        // vendee_keywords
+        if (servant_vendee.vendee_keywords || servant_vendee.vendee_keywords === '') {
+            params.UpdateExpression = params.UpdateExpression + ', #f = :vendee_keywords_val';
+            params.ExpressionAttributeNames['#f'] = 'vendee_keywords';
+            params.ExpressionAttributeValues[':vendee_keywords_val'] = servant_vendee.vendee_keywords.length ? servant_vendee.vendee_keywords.toLowerCase().replace(/[^\w\s,]/gi, '') : null;
         }
         // url_twitter
         if (servant_vendee.url_twitter || servant_vendee.url_twitter === '') {

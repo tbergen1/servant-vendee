@@ -17,6 +17,8 @@ module.exports.checkVendee = function(req, res, next) {
     var subdomain = domain.split('.');
     req.vendee = false;
 
+    console.log("Checking Vendee...");
+
     /**
      * Check for custom domain or subdomain
      */
