@@ -1,5 +1,5 @@
 /**
- * ServantBlog Data Model
+ * ServantShowcase Data Model
  */
 
 var moment = require('moment'),
@@ -10,7 +10,7 @@ var moment = require('moment'),
 
 
 
-var ServantBlog = {
+var ServantShowcase = {
 
     showServantBlog: function(key, callback) {
 
