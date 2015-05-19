@@ -1,0 +1,65 @@
+<meta charset="utf-8">
+
+<!-- Title -->
+<title><% if (!article_id) { %><%= blog.blog_title %> - <%= blog.blog_description %><% } %><% if (article_id) { %><%= preload.post ? preload.post.title : 'Article Not Found' %><% } %> - <%= blog.blog_title %></title>
+
+<!-- Mobile Specific Metas -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<% if (blog.custom_domain) { blog.host = 'http://' + blog.custom_domain; }
+else { blog.host = 'http://' + blog.subdomain + '.servantpress.io'; } %>
+
+<% if (!article_id) { %>
+    <!-- SEO – Main Page -->
+    <link rel="canonical" href="<%= blog.host %>" />
+    <meta name="description" content="<%= blog.blog_description %>">
+    <meta name="keywords" content="<%= blog.blog_keywords %>" )>
+    <!-- Facebook -->
+    <meta name="og:locale" property="og:locale" content="en_US" />
+    <meta name="og:type" property="og:type" content="website" />
+    <meta name="og:title" property="og:title" content="<%= blog.blog_title %>" />
+    <meta name="og:description" property="og:description" content="<%= blog.blog_description %>" />
+    <meta name="og:url" property="og:url" content="<%= blog.host %>" />
+    <meta name="og:site_name" property="og:site_name" content="<%= blog.blog_title %>" />
+    <meta property="og:image" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="<%= blog.blog_title %>"/>
+    <meta name="twitter:description" content="<%= blog.blog_description %>"/>
+    <meta name="twitter:image:src" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>"/>
+<% } %>
+
+<% if (article_id) { %>
+    <!-- SEO – Article Page -->
+    <link rel="canonical" href="<%= blog.host %>/articles/<%= article_id %>" />
+    <meta name="description" content="<%= preload.post ? preload.post.plaintext.substring(0, (preload.post.plaintext.indexOf('.') > 0 && preload.post.plaintext.indexOf('.') < 100 ? preload.post.plaintext.indexOf('.') : 100)) + '...' : blog.blog_title %>">
+    <meta name="keywords" content="<%= preload.post ? preload.post.title.replace(/[^\w\s]/gi, '').split(' ').join(',') : blog.blog_keywords %>" )>
+    <!-- Facebook -->
+    <meta name="og:locale" property="og:locale" content="en_US" />
+    <meta name="og:type" property="og:type" content="article" />
+    <meta name="og:title" property="og:title" content="<%= preload.post ?  preload.post.title : '' %>  - <%= blog.blog_title %>" />
+    <meta name="og:description" property="og:description" content="<%= preload.post ? preload.post.plaintext.substring(0, (preload.post.plaintext.indexOf('.') > 0 && preload.post.plaintext.indexOf('.') < 100 ? preload.post.plaintext.indexOf('.') : 100)) + '...' : blog.blog_description %>" />
+    <meta name="og:url" property="og:url" content="<%= blog.host %>/articles/<%= article_id %>" />
+    <meta name="og:site_name" property="og:site_name" content="<%= preload.post ? preload.post.title : '' %>  - <%= blog.blog_title %>" />
+    <meta property="article:tag" content="<%= preload.post ? preload.post.title.replace(/[^\w\s]/gi, '').split(' ').join(',') : blog.blog_keywords.split(" ").join(',').replace(',,', ',') %>" />
+    <meta property="og:image" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="<%= preload.post ? preload.post.title : '' %> - <%= blog.blog_title %>"/>
+    <meta name="twitter:description" content="<%= preload.post ? preload.post.plaintext.substring(0, (preload.post.plaintext.indexOf('.') > 0 && preload.post.plaintext.indexOf('.') < 100 ? preload.post.plaintext.indexOf('.') : 100)) + '...' : blog.blog_description %>"/>
+    <meta name="twitter:image:src" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>"/>
+<% } %>
+
+<!-- Font -->
+<link href="//fonts.googleapis.com/css?family=Lato:300,400,700">
+<link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+<!-- CSS -->    
+<% if (environment === 'production') { %>
+    <link rel="stylesheet" href="https://danelprrc5660.cloudfront.net/servant_press/<%= fingerprint %>/<%= fingerprint %>_one.min.css">
+<% } else { %>
+    <link rel="stylesheet" href="/assets/css/themes/one/one.css">
+<% } %>
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/assets/img/favicon.png">

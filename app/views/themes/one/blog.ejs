@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include head.ejs %>
+</head>
+
+<body>
+
+    <!-- Modal Background -->
+    <div id="modal-background" class="modal" style="display:none;">
+
+        <!-- User Authenticated: Modal Introduction -->
+        <div id="modal-welcome" class="modal animate-zoom-in" style="display:none;">
+            <p style="margin-bottom:15px;">
+                <img src="/assets/img/logo_light.png">
+            </p>
+            <h1>Welcome To Your Blog!</h1>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            • Click this icon to see your settings: <i class="ion-gear-a" onclick="Theme.admin.toggleMenu()"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            • Settings save automatically when changed.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            • Everything is free!
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top:30px;">
+                <button onclick="Theme.hideModal('sp_welcome_<%= blog.subdomain %>', 'seen', 86400 )">Got It!</button>
+            </p>
+        </div>
+
+        <!-- Modal: Capture Leads -->
+        <div id="modal-popup" class="modal" style="display:none;">
+            <h1 id="popup-header"><%= blog.popup_header %></h1>
+            <p id="popup-body"><%= blog.popup_body %></p>
+            <form id="form-email">
+                <input id="field-email" type="text" placeholder="Your Email Address"></input>
+                <input id="form-submit" type="submit">
+            </form>
+            <p id="form-saving" style="display:none;">
+                Saving Email...
+            </p>
+            <p id="form-success" style="display:none;">
+                Thanks, your email has been saved!
+            </p>
+            <p id="form-error" style="display:none;"></p>
+            <p>
+                <a id="form-hide" onclick="Theme.hideModal('sp_popup_<%= blog.subdomain %>', 'seen', 604800 )">
+                    No thanks...
+                </a>
+            </p>
+        </div>
+
+        <!-- Modal: Select Image -->
+        <div id="modal-images" class="modal" style="display:none;">
+            <p style="font-size:16px;">Select An Image From Your Servant To Use As A Logo</p>
+            <div id="image-results"></div>
+            <p style="font-size:14px;text-align:center">
+                <a onclick="Theme.hideModal('#modal-images')">Cancel</a>
+            </p>
+        </div>
+
+    </div>
+
+
+
+    <!-- User Authenticated: Admin Menu -->
+    <% if (authenticated) { %>
+        <div id="admin-menu">
+            <div id="admin-menu-inner">
+                <!-- Signout Link -->
+                <a class="signout" href="/api/logout"><i class="ion-power"></i></a>
+                <!-- Logo -->
+                <div class="menu-section">
+                    <img class="logo" src="/assets/img/logo_dark.png" draggable="false">
+                </div>
+
+                <p class="menu-label">
+                    Servant
+                </p>
+                <div class="menu-section">
+                    <select id="servant-select">
+                    </select>
+                </div>
+                <p class="menu-label" style="margin-bottom:0px;">
+                    Theme
+                </p>
+                <div class="menu-section" style="line-height:0px;">
+                    <i class="ion-ios-arrow-back theme-arrow" onclick="Theme.admin.changeTheme(-1)" style="margin-right:25px;"></i>
+                    <i class="ion-ios-arrow-forward theme-arrow" onclick="Theme.admin.changeTheme(1)"></i>
+                </div>
+                <form id="blog-options">
+                    <p class="menu-label">
+                        Branding
+                    </p>
+                    <div class="menu-section">
+                        <input type="text" class="blog-option-text" name="blog_title" placeholder="Blog Title" value="<%= blog.blog_title %>">
+                    </div>
+                    <div class="menu-section">
+                        <textarea  class="blog-option-text" name="blog_description" placeholder="Blog Description"><%= blog.blog_description %></textarea>
+                    </div>
+
+                    <!-- Logo Image -->
+                    <div class="menu-section" id="admin-logo-image-container" style="margin:15px 0px 0px 0px;<% if (!blog.logo_image) { %> display:none <% } %>">
+                        <img id="admin-logo-image" class="servant-image" style="max-height:80px;max-width:150px;" 
+                        <% if (preload.logo) { %>src='<%= preload.logo.resolution_medium %>'<% } %>>
+                    </div>
+                    <!-- Logo Image: Set -->
+                    <div class="menu-section" style="margin-top:10px;font-size:14px;">
+                        <p class="link" onclick="Theme.admin.showServantImagesModal()">
+                            <i class="ion-image" style="margin-right:5px"></i>
+                            Set Logo Image
+                        </p>
+                        <p id="admin-logo-delete-link" class="link" onclick="Theme.admin.removeLogoImage()" style="<% if (!blog.logo_image) { %> display:none; <% } %>">
+                            <i class="ion-trash-a" style="margin-right:5px"></i>
+                            Remove Logo Image
+                        </p>
+                    </div>
+
+                    <p class="menu-label">
+                        Links
+                    </p>
+                    <div class="menu-section">
+                        <input type="text"  class="blog-option-text" name="url_home" placeholder="Home Url" value="<%= blog.url_home %>">
+                    </div>
+                    <div class="menu-section">
+                        <input type="text" class="blog-option-text" name="url_twitter"  placeholder="Twitter Url" value="<%= blog.url_twitter %>">
+                    </div>
+                    <div class="menu-section">
+                        <input type="text" class="blog-option-text" name="url_github"  placeholder="Github Url" value="<%= blog.url_github %>">
+                    </div>
+                    <div class="menu-section">
+                        <input type="text" class="blog-option-text" name="url_facebook" placeholder="Facebook Url" value="<%= blog.url_facebook %>">
+                    </div>
+                    <p class="menu-label">
+                        Pop-up
+                    </p>
+                    <div class="menu-section">
+                        <select class="select-option" name="popup">
+                            <option value="none" <% if (blog.popup === 'none') { %> selected <% } %> >None</option>
+                            <option value="timer" <% if (blog.popup === 'timer') { %> selected <% } %> >Timer</option>
+                            <option value="exit" <% if (blog.popup === 'exit') { %> selected <% } %> >Exit</option>
+                        </select>
+                    </div>
+                    <div class="menu-section">
+                        <input class="blog-option-text" <% if (blog.popup !== 'timer') { %> style="display:none;" <% } %> name="popup_timer" type="text" placeholder="Timer Delay (Seconds)" value="<%= blog.popup_timer %>">
+                    </div>
+                    <div class="menu-section">
+                        <input class="blog-option-text" name="popup_header" type="text" placeholder="Pop-Up Header" value="<%= blog.popup_header %>">
+                    </div>
+                    <div class="menu-section">
+                        <textarea class="blog-option-text" name="popup_body" placeholder="Pop-Up Body"><%= blog.popup_body %></textarea>
+                    </div>
+                    <p class="menu-smalltext">
+                        Make a change, then refresh the page to see popup changes
+                    </p>
+
+                    <!-- SEO Keywords -->
+                    <p class="menu-label">
+                        SEO Keywords
+                    </p>
+                    <div class="menu-section">
+                        <input class="blog-option-text" name="blog_keywords" type="text" placeholder="dogs, cats, wombats" value="<%= blog.blog_keywords %>">
+                    </div>
+                    <p class="menu-smalltext">
+                        Separate your keywords by a comma
+                    </p>
+
+                    <!-- Custom Domain -->
+                    <p class="menu-label">
+                        Custom Domain
+                    </p>
+                    <div class="menu-section">
+                        <input class="blog-option-text" name="custom_domain" type="text" placeholder="inthisformat.com" value="<%= blog.custom_domain %>">
+                    </div>
+                    <p class="menu-smalltext">
+                        Create a CNAME DNS record for your custom domain that points to <%= blog.subdomain %>.servantpress.io
+                    </p>
+                </form>
+            </div>
+        </div>
+    <% } %>
+
+
+    <!-- Main Site -->
+    <div class="site <%= blog.theme %>" data-theme="<%= blog.theme %>" id="page">
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar" style="top:0px;">
+
+            <% if (authenticated) { %>
+                <a class="menu-link">
+                    <i class="ion-gear-a" onclick="Theme.admin.toggleMenu()"></i>
+                </a>
+            <% } %>
+
+            <!-- Header -->
+            <header class="site-header" id="masthead">
+
+                <!-- Branding -->
+                <div class="site-branding">
+
+                    <!-- Back Link Top -->
+                    <% if (article_id) { %>
+                        <p id="backlink-top">
+                            <a class="outer-link" href="/">
+                                <i class="ion-arrow-left-c"></i> Back to all articles
+                            </a>
+                        </p>
+                    <% } %>
+
+                    <!-- Logo Image -->
+                    <a href="/">
+                        <img class="logo-image animate-zoom-in" draggable="false" 
+                            <% if (!blog.logo_image) { %>style='display:none;'<% } %>  
+                            <% if (preload.logo) { %>src='<%= preload.logo.resolution_medium %>'<% } %>  
+                        >
+                    </a>
+
+                    <!-- Title & Description -->
+                    <h1> 
+                        <a href="/" class="site-title">
+                            <%= blog.blog_title %> 
+                        </a>
+                    </h1>
+                    <p class="site-description">
+                        <%= blog.blog_description %>
+                    </p>
+
+                    <!-- Social Icons -->
+                    <table class="social-widget">
+                        <tbody>
+                            <tr>
+                                <td <% if (!blog.url_home) { %> style="display:none;" <% } %> >
+                                    <a class="social url_home" href="<%= blog.url_home %>" target="_blank">
+                                        <i class="icon ion-android-home"></i>
+                                    </a>
+                                </td>
+                                <td <% if (!blog.url_twitter) { %> style="display:none;" <% } %> >
+                                    <a class="social url_twitter" href="<%= blog.url_twitter %>" target="_blank">
+                                        <i class="icon ion-social-twitter"></i>
+                                    </a>
+                                </td>
+                                <td <% if (!blog.url_github) { %> style="display:none;" <% } %> >
+                                    <a class="social url_github" href="<%= blog.url_github %>" target="_blank">
+                                        <i class="icon ion-social-github"></i>
+                                    </a>
+                                </td>
+                                <td <% if (!blog.url_facebook) { %> style="display:none;" <% } %> >
+                                    <a class="social url_facebook" href="<%= blog.url_facebook %>" target="_blank">
+                                        <i class="icon ion-social-facebook"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Back Link Bottom -->
+                    <% if (article_id) { %>
+                        <p id="backlink-bottom">
+                            <a class="outer-link" href="/">
+                                <i class="ion-arrow-left-c"></i> Back to all articles
+                            </a>
+                        </p>
+                    <% } %>
+                    
+                </div>
+            </header>
+
+            <!-- Secondary -->
+            <div class="secondary">
+                <!-- Popular Posts Widget -->
+                <% if (blog.popular_posts) { %>
+                    <div class="widget">
+                        <h6 class="widget-title"> Popular Posts </h6>
+                        <p class="loading-popular-posts"> 
+                            Loading Popular Posts... 
+                        </p>
+                        <ul class="popular-posts" id="popular-posts"></ul>
+                    </div>
+                <% } %>
+            </div>
+
+        </div>
+
+        <!-- Site Content -->
+        <div class="site-content" id="content">
+            <div class="content-area" id="primary">
+                <main class="site-main" id="main">
+                   
+                    <!-- List Blog Post Previews -->
+                    <% if (!preload.error && !article_id) { %>
+
+                        <!-- If servant has blog posts -->
+                        <% if (preload.posts && preload.posts.length) { %>
+                            <% for(i=0;i<preload.posts.length;i++) { %>
+                                <% var post = preload.posts[i] %>
+                                <article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">
+                                    <header class="entry-header">
+                                        <h1 class="entry-title" itemprop="name">
+                                            <a rel="bookmark" href="/articles/<%= post._id %>">
+                                                <%= post.title %>
+                                            </a>
+                                        </h1>
+                                    </header>
+                                    <div class="entry-content">
+                                        <p itemprop="description" itemprop="description">
+                                            <%= post.plaintext.substring(0, (post.plaintext.indexOf('.') > 0 ? post.plaintext.indexOf('.') : 100)) %>...
+                                        </p>
+                                    </div>
+                                </article>
+                            <% } %>
+                        <% } %>
+
+                    <% } %>
+
+                    <!-- List Blog Post -->
+                    <% if (!preload.error && article_id) { %>
+                        <% if (preload.post) { %>
+                            <% var post = preload.post %>
+                            <article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">
+                                <header class="entry-header">
+                                    <h1 class="entry-title" itemprop="name">
+                                        <%= post.title %>
+                                    </h1>
+                                </header>
+                                <div class="entry-content">
+                                    <%- post.html %>
+                                </div>
+                            </article>
+                        <% } %>
+                    <% } %>
+
+                    <!-- Error: No Blog Posts -->
+                    <% if (!preload.error && !article_id && !preload.posts.length) { %>
+                        <div class="notice">
+                            <h1>This Servant Has No Blog Posts!</h1>
+                            <p>Create some blog posts <a href="https://www.servant.co/#!/<%= blog.servant_id %>/archetypes/blog_post" target="_blank" style="text-decoration:underline">in your Servant dashboard</a>, then refresh this page!</p>
+                        </div>
+                    <% } %>
+
+                    <!-- Error: Blog Post Missing -->
+                    <% if (preload.error && preload.error.code === 'Missing') { %>
+                        <div class="notice">
+                            <h1>Blog Post Missing!</h1>
+                            <p>Sorry, this blog post could not be found</p>
+                            <p><a href="/"><i class="ion-arrow-left-c"></i> Go Back</a></p>
+                        </div>
+                    <% } %>
+
+                    <!-- Error: Blog Post Missing -->
+                    <% if (preload.error && preload.error.code === 'ServesError') { %>
+                        <div class="notice">
+                            <h1>This Servant Is Out Of Serves!</h1>
+                            <p>Go to your <a href="https://www.servant.co/#!/<%= blog.servant_id %>/archetypes/blog_post" target="_blank" style="text-decoration:underline">Servant dashboard</a> to get more serves, then refresh this page!</p>
+                        </div>
+                    <% } %>
+
+                </main>
+            </div>
+        </div>
+
+    </div>
+    <% include foot.ejs %>
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.idea
+*.env
+
+pids
+logs
+results
+.DS_Store
+npm-debug.log
+node_modules
+public/libs
+.elasticbeanstalk/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

@@ -1,0 +1,50 @@
+
+<!-- Define Global -->
+<script type="text/javascript">
+   if (!window.Theme) window.Theme = Theme = {
+      data: {
+         authenticated: '<%= authenticated %>',
+         servant_client_id: '<%= servant_client_id %>',
+         servant_id: '<%= blog.servant_id %>',
+         access_token: '<%= user.servant_access_token_limited %>',
+         themes: '<%= themes %>',
+         blog_subdomain: '<%= blog.subdomain %>',
+         logo_image: '<%= blog.logo_image %>',
+         custom_domain: '<% blog.custom_domain %>',
+         popup: '<%= blog.popup %>',
+         popup_timer: '<%= blog.popup_timer %>',
+         article_id: '<%= article_id %>'
+      }
+   };
+</script>
+
+<!-- Scripts -->
+<% if (environment === 'production') { %>
+   <script src="https://danelprrc5660.cloudfront.net/servant_press/<%= fingerprint %>/<%= fingerprint %>_one.min.js"></script>
+<% } else { %>
+   <script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+   <script src="/assets/libs/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+   <script src="/assets/libs/servant-sdk-javascript/dist/servant_sdk_js.min.js"></script>
+   <script src="/assets/js/themes/one/index.js"></script>
+   <script src="/assets/js/themes/one/utilities.js"></script>
+   <script src="/assets/js/themes/one/admin.js"></script>
+<% } %>
+
+<!-- Google Analytics -->
+<% if (blog.google_analytics_code) { %>
+   <script>
+      (function(b, o, i, l, e, r) {
+         b.GoogleAnalyticsObject = l;
+         b[l] || (b[l] = function() {
+              (b[l].q = b[l].q || []).push(arguments)
+         });
+         b[l].l = +new Date;
+         e = o.createElement(i);
+         r = o.getElementsByTagName(i)[0];
+         e.src = 'https://www.google-analytics.com/analytics.js';
+         r.parentNode.insertBefore(e, r)
+      }(window, document, 'script', 'ga'));
+      ga('create', '<%= blog.google_analytics_code %>', 'auto');
+      ga('send', 'pageview');
+   </script>
+<% } %>

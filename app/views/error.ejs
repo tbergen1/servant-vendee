@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Whoops, Blog Not Found! – <%= name %></title>
+    <meta name="description" content="<%= description %>">
+    <meta name="keywords" content="<%= keywords %>" )>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font -->
+    <link href="//fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- CSS -->   
+    <% if (environment === 'production') { %>
+       <link rel="stylesheet" type="text/css" href="https://danelprrc5660.cloudfront.net/servant_press/<%= fingerprint %>/<%= fingerprint %>_home.min.css">
+    <% } else { %>
+        <link rel="stylesheet" href="assets/libs/skeleton/css/normalize.css">
+        <link rel="stylesheet" href="assets/libs/skeleton/css/skeleton.css">
+        <link rel="stylesheet" href="assets/css/styles.css">
+    <% } %>
+     <link rel="stylesheet" type="text/css" href="https://s3.amazonaws.com/servant-cdn/css/servant-styles.min.css"> 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+</head>
+
+<body>
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Header -->
+    <div class="container" data-environment="<%= environment %>">
+
+        <div class="row">
+            <div class="twelve columns st-centered st-animate-zoom-in">
+                
+                <h1 style="margin-top:50px;">Whoops!</h1>
+                <h5><%= message %></h5>
+                <h5 style="margin-top:40px;">
+                    <a href="http://www.servantpress.io" class="st-btn-red st-btn-lg">Create A free blog</a>
+                </h5>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <% if (environment === 'production') { %>
+       <script src="https://danelprrc5660.cloudfront.net/servant_press/<%= fingerprint %>/<%= fingerprint %>_home.min.js"></script>
+    <% } else { %>
+       <script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+       <script src="/assets/js/home/home.js"></script>
+    <% } %>
+
+    <!-- Google Analytics -->
+    <script>
+    (function(b, o, i, l, e, r) {
+        b.GoogleAnalyticsObject = l;
+        b[l] || (b[l] = function() {
+            (b[l].q = b[l].q || []).push(arguments)
+        });
+        b[l].l = +new Date;
+        e = o.createElement(i);
+        r = o.getElementsByTagName(i)[0];
+        e.src = 'https://www.google-analytics.com/analytics.js';
+        r.parentNode.insertBefore(e, r)
+    }(window, document, 'script', 'ga'));
+    ga('create', '<%= google_analytics_code %>', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+</body>
+</html>
