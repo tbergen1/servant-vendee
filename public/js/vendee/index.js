@@ -153,7 +153,7 @@ Theme.initializePopup = function() {
 
         // Set Timer
         setTimeout(function() {
-            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
+            if (!_this.utilities.cookies.hasItem('sv_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
         }, Theme.data.popup_timer ? Theme.data.popup_timer * 1000 : 10000);
 
     }
@@ -166,7 +166,7 @@ Theme.initializePopup = function() {
 
         // Listener: Mouse Leave Document
         document.body.addEventListener('mouseleave', function() {
-            if (!_this.utilities.cookies.hasItem('sp_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
+            if (!_this.utilities.cookies.hasItem('sv_popup_' + _this.data.vendee_subdomain)) Theme.showModal('#modal-popup');
         });
 
     }
@@ -215,7 +215,7 @@ Theme.savePopupEmail = function() {
         $('#form-saving').hide();
         $('#form-success').show();
         setTimeout(function() {
-            return _this.hideModal('sp_popup_' + Theme.data.vendee_subdomain, 'seen', 604800);
+            return _this.hideModal('sv_popup_' + Theme.data.vendee_subdomain, 'seen', 604800);
         }, 1700);
     });
 };

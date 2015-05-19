@@ -91,13 +91,13 @@ Theme.admin = {
     changeTheme: function(direction) {
         var _this = this;
 
-        var theme = $('#page').attr('data-theme');
+        var theme = $('#vendee-container').attr('data-theme');
         var new_theme_index = Theme.data.themes.indexOf(theme) + direction;
         if (new_theme_index < 0) new_theme_index = Theme.data.themes.length - 1;
         if (new_theme_index >= Theme.data.themes.length) new_theme_index = 0;
-        $('.site').removeClass(theme);
-        $('.site').addClass(Theme.data.themes[new_theme_index]);
-        $('.site').attr('data-theme', Theme.data.themes[new_theme_index]);
+        $('#vendee-container').removeClass(theme);
+        $('#vendee-container').addClass(Theme.data.themes[new_theme_index]);
+        $('#vendee-container').attr('data-theme', Theme.data.themes[new_theme_index]);
 
         // Save Settings
         return _this.saveSettings({
@@ -146,7 +146,7 @@ Theme.admin = {
         else $("input[name='popup_timer']").show();
 
         // Remove Popup Cookie
-        Theme.utilities.cookies.removeItem('sp_popup_' + Theme.data.vendee_subdomain);
+        Theme.utilities.cookies.removeItem('sv_popup_' + Theme.data.vendee_subdomain);
 
     },
 
