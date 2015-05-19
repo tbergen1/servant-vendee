@@ -1,7 +1,7 @@
-Servant-Showcase
+Servant-Vendee
 =================================
 
-Free mobile-optimized catalog for the products on your Servant.
+Free, mobile-optimized catalog for the products on your Servant.
 
 ###Set-Up
 

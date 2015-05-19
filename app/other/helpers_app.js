@@ -2,19 +2,19 @@
 var shortid = require('shortid'),
     Config = require('../../config/config'),
     SubdomainIncrementer = require('../models/subdomain_incrementer'),
-    ServantBlog = require('../models/servant_blog');
+    Vendee = require('../models/vendee');
 
 /**
- * Create A Servant Blog
+ * Create A Vendee
  */
 
-var createServantBlog = function(servant, servantUserID, callback) {
+var createVendee = function(servant, servantUserID, callback) {
 
-    var new_blog = {
+    var new_vendee = {
         servant_id: servant._id,
         servant_user_id: servantUserID,
-        blog_title: servant.master && servant.master !== '' ? servant.master : 'An Untitled Blog',
-        blog_description: servant.master_biography && servant.master_biography !== '' ? servant.master_biography : 'I don’t need an alarm clock. My ideas wake me.',
+        vendee_title: servant.master && servant.master !== '' ? servant.master : 'An Untitled Vendee',
+        vendee_description: servant.master_biography && servant.master_biography !== '' ? servant.master_biography : 'I don’t need an alarm clock. My ideas wake me.',
         popup: 'none',
         popup_header: 'Get Updates',
         popup_body: 'Have our updates delivered to your inbox.',
@@ -24,15 +24,15 @@ var createServantBlog = function(servant, servantUserID, callback) {
     // Get unique subdomain
     SubdomainIncrementer.increment(function(error, result) {
 
-        new_blog.subdomain = (result.Attributes.number).toString(36);
+        new_vendee.subdomain = (result.Attributes.number).toString(36);
 
         // In the rare case 'www' is generated as a subdomain, re-render this function
-        if (new_blog.subdomain === 'www') return createServantBlog(servant, servantUserID, callback);
+        if (new_vendee.subdomain === 'www') return createVendee(servant, servantUserID, callback);
 
-        // Save new blog
-        ServantBlog.saveServantBlog(new_blog, function(error, blog) {
+        // Save new vendee
+        Vendee.saveVendee(new_vendee, function(error, vendee) {
             if (error) return callback(error, null);
-            return callback(null, blog);
+            return callback(null, vendee);
         });
     });
 
@@ -52,6 +52,6 @@ var renderErrorPage = function(res, error_message) {
 };
 
 module.exports = {
-    createServantBlog: createServantBlog,
+    createVendee: createVendee,
     renderErrorPage: renderErrorPage
 };

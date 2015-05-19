@@ -5,14 +5,14 @@
       data: {
          authenticated: '<%= authenticated %>',
          servant_client_id: '<%= servant_client_id %>',
-         servant_id: '<%= blog.servant_id %>',
+         servant_id: '<%= vendee.servant_id %>',
          access_token: '<%= user.servant_access_token_limited %>',
          themes: '<%= themes %>',
-         blog_subdomain: '<%= blog.subdomain %>',
-         logo_image: '<%= blog.logo_image %>',
-         custom_domain: '<% blog.custom_domain %>',
-         popup: '<%= blog.popup %>',
-         popup_timer: '<%= blog.popup_timer %>',
+         vendee_subdomain: '<%= vendee.subdomain %>',
+         logo_image: '<%= vendee.logo_image %>',
+         custom_domain: '<% vendee.custom_domain %>',
+         popup: '<%= vendee.popup %>',
+         popup_timer: '<%= vendee.popup_timer %>',
          article_id: '<%= article_id %>'
       }
    };
@@ -31,7 +31,7 @@
 <% } %>
 
 <!-- Google Analytics -->
-<% if (blog.google_analytics_code) { %>
+<% if (vendee.google_analytics_code) { %>
    <script>
       (function(b, o, i, l, e, r) {
          b.GoogleAnalyticsObject = l;
@@ -44,7 +44,7 @@
          e.src = 'https://www.google-analytics.com/analytics.js';
          r.parentNode.insertBefore(e, r)
       }(window, document, 'script', 'ga'));
-      ga('create', '<%= blog.google_analytics_code %>', 'auto');
+      ga('create', '<%= vendee.google_analytics_code %>', 'auto');
       ga('send', 'pageview');
    </script>
 <% } %>

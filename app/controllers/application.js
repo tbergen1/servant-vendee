@@ -2,7 +2,7 @@
 var async = require('async'),
     moment = require('moment'),
     _ = require('lodash'),
-    ServantBlog = require('../models/servant_blog'),
+    Vendee = require('../models/vendee'),
     User = require('../models/user'),
     ServantSDK = require('../other/instance_servant_sdk'),
     HelpersApp = require('../other/helpers_app'),
@@ -10,8 +10,8 @@ var async = require('async'),
 
 /**
  * Index
- * - Middleware first checks the URL to see if it is a blog's URL via subdomain or custom domain
- * - Renders either the home page, blog or a random blog owned by the user
+ * - Middleware first checks the URL to see if it is a vendee's URL via subdomain or custom domain
+ * - Renders either the home page, vendee or a random vendee owned by the user
  */
 
 var index = function(req, res) {
@@ -29,112 +29,112 @@ var index = function(req, res) {
     };
 
 
-    // Scenario: No blog and no session, render home page
-    if (!req.blog && !req.session.user) return res.render('home', site_variables);
+    // Scenario: No vendee and no session, render home page
+    if (!req.vendee && !req.session.user) return res.render('home', site_variables);
 
 
-    // Define Blog Variables
-    var blog_variables = {
+    // Define vendee Variables
+    var vendee_variables = {
         environment: process.env.NODE_ENV,
         fingerprint: Config.fingerprint,
         servant_client_id: process.env.SERVANT_CLIENT_ID,
         themes: Config.app.themes,
 
         authenticated: null,
-        blog: req.blog ? req.blog : {},
+        vendee: req.vendee ? req.vendee : {},
         user: req.user ? req.user : {},
         article_id: req.params.articleID ? req.params.articleID : null
     };
-    // If blog, session and blog is owned by user session, mark authenticated
-    if (req.blog && req.session.user && req.blog.servant_user_id === req.session.user.servant_user_id) blog_variables.authenticated = true;
+    // If vendee, session and vendee is owned by user session, mark authenticated
+    if (req.vendee && req.session.user && req.vendee.servant_user_id === req.session.user.servant_user_id) vendee_variables.authenticated = true;
 
-    // Scenario: No blog but session, render random blog owned by the session user
-    if (!req.blog && req.session.user) {
-        return ServantBlog.listServantBlogsByUser(req.session.user.servant_user_id, function(error, blogs) {
+    // Scenario: No vendee but session, render random vendee owned by the session user
+    if (!req.vendee && req.session.user) {
+        return Vendee.listVendeesByUser(req.session.user.servant_user_id, function(error, vendees) {
             if (error) return res.status(500).json({
                 error: error
             });
-            // Redirect to random blog
-            var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:8080';
-            res.redirect(req.protocol + '://' + blogs[0].subdomain + '.' + host);
+            // Redirect to random vendee
+            var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:' + Config.app.port;
+            res.redirect(req.protocol + '://' + vendees[0].subdomain + '.' + host);
         });
     }
 
     /**
-     * Function Render Blog
+     * Function Render Vendee
      * - Fetches first posts, single post and logo from the ServantAPI and renders it in the page for SEO reasons
      */
 
-    var renderBlog = function() {
+    var renderVendee = function() {
 
-        blog_variables.preload = {};
+        vendee_variables.preload = {};
 
         // Define ServantAPI functions
         var getPosts = function(done) {
-            ServantSDK.archetypesRecent(req.user.servant_access_token_limited, req.blog.servant_id, 'blog_post', 1, function(error, response) {
-                if (error) blog_variables.preload.error = error;
-                else blog_variables.preload.posts = response.records;
+            ServantSDK.archetypesRecent(req.user.servant_access_token_limited, req.vendee.servant_id, 'vendee_post', 1, function(error, response) {
+                if (error) vendee_variables.preload.error = error;
+                else vendee_variables.preload.posts = response.records;
                 return done();
             });
         };
         var getPost = function(done) {
-            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.blog.servant_id, 'blog_post', blog_variables.article_id, function(error, response) {
-                if (error) blog_variables.preload.error = error;
-                else blog_variables.preload.post = response;
+            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'vendee_post', vendee_variables.article_id, function(error, response) {
+                if (error) vendee_variables.preload.error = error;
+                else vendee_variables.preload.post = response;
                 return done();
             });
         };
         var getLogo = function(done) {
-            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.blog.servant_id, 'image', blog_variables.blog.logo_image, function(error, response) {
-                if (error) blog_variables.preload.error = error;
-                else blog_variables.preload.logo = response;
+            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'image', vendee_variables.vendee.logo_image, function(error, response) {
+                if (error) vendee_variables.preload.error = error;
+                else vendee_variables.preload.logo = response;
                 return done();
             });
         };
 
         var tasks = [];
 
-        if (!blog_variables.article_id) tasks.push(getPosts);
-        if (blog_variables.article_id) tasks.push(getPost);
-        if (blog_variables.blog.logo_image) tasks.push(getLogo);
+        if (!vendee_variables.article_id) tasks.push(getPosts);
+        if (vendee_variables.article_id) tasks.push(getPost);
+        if (vendee_variables.vendee.logo_image) tasks.push(getLogo);
 
         console.time('ServantAPI: Calls');
         async.parallel(tasks, function(error, result) {
             console.timeEnd('ServantAPI: Calls');
-            res.render('themes/one/blog', blog_variables);
+            res.render('themes/one/vendee', vendee_variables);
         });
 
     };
 
-    // Scenario: Render Blog
-    return renderBlog();
+    // Scenario: Render Vendee
+    return renderVendee();
 
 };
 
 
 
 /**
- * Load Blog By Servant
- * - Loads a blog by servant id
+ * Load Vendee By Servant
+ * - Loads a vendee by servant id
  * - Used when a logged in user switches servant in the Admin Menu
- * - Creates a blog, if servant doesn't have one
+ * - Creates a vendee, if servant doesn't have one
  */
 
-var loadBlogByServant = function(req, res, next) {
+var loadVendeeByServant = function(req, res, next) {
 
     // Defaults
     var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:8080';
 
-    ServantBlog.listServantBlogsByServant(req.params.servantID, function(error, blogs) {
+    Vendee.listVendeesByServant(req.params.servantID, function(error, vendees) {
 
         if (error) return res.status(500).json({
             error: error
         });
 
-        // Servant has blog, redirect
-        if (blogs && blogs.length) return res.redirect(req.protocol + '://' + blogs[0].subdomain + '.' + host);
+        // Servant has vendee, redirect
+        if (vendees && vendees.length) return res.redirect(req.protocol + '://' + vendees[0].subdomain + '.' + host);
 
-        // Servant doesn't have blog, create one
+        // Servant doesn't have vendee, create one
         ServantSDK.showServant(req.session.user.servant_access_token_limited, req.params.servantID, function(error, response) {
 
             if (error) return res.status(500).json({
@@ -142,7 +142,7 @@ var loadBlogByServant = function(req, res, next) {
                 error: error
             });
 
-            HelpersApp.createServantBlog(response, req.session.user.servant_user_id, function(error, blog) {
+            HelpersApp.createVendee(response, req.session.user.servant_user_id, function(error, vendee) {
 
                 if (error) return res.status(500).json({
                     error: error
@@ -150,7 +150,7 @@ var loadBlogByServant = function(req, res, next) {
 
                 // Render
                 var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:8080';
-                res.redirect(req.protocol + '://' + blog.subdomain + '.' + host);
+                res.redirect(req.protocol + '://' + vendee.subdomain + '.' + host);
 
             });
         });
@@ -163,36 +163,36 @@ var loadBlogByServant = function(req, res, next) {
 
 /**
  * Save Settings
- * - Saves Blog settings
+ * - Saves Vendee settings
  */
 
 var saveSettings = function(req, res, next) {
 
-    // Show Blog
-    ServantBlog.showServantBlog({
+    // Show Vendee
+    Vendee.showVendee({
         subdomain: req.body.subdomain
-    }, function(error, blog) {
+    }, function(error, vendee) {
 
         if (error) return res.status(500).json({
             error: error
         });
 
-        if (!blog) return res.status(404).json({
-            message: 'Blog not found'
+        if (!vendee) return res.status(404).json({
+            message: 'Vendee not found'
         });
 
-        // Check if user owns this blog
-        if (blog.servant_user_id !== req.session.user.servant_user_id) return res.status(401).json({
+        // Check if user owns this vendee
+        if (vendee.servant_user_id !== req.session.user.servant_user_id) return res.status(401).json({
             message: 'Unauthorized'
         });
 
-        _.assign(blog, req.body);
+        _.assign(vendee, req.body);
 
-        ServantBlog.saveServantBlog(blog, function(error, blog) {
+        Vendee.saveVendee(vendee, function(error, vendee) {
             if (error) return res.status(500).json({
                 error: error
             });
-            return res.json(blog);
+            return res.json(vendee);
         });
     });
 
@@ -290,16 +290,16 @@ var saveEmail = function(req, res, next) {
      * Load Required Data
      */
 
-    ServantBlog.showServantBlog({
+    Vendee.showVendee({
         subdomain: req.body.subdomain
-    }, function(error, blog) {
+    }, function(error, vendee) {
 
-        if (error || !blog) return res.status(400).json({
+        if (error || !vendee) return res.status(400).json({
             message: 'Sorry, something went wrong'
         });
 
         // Load user, to get Servant access token
-        User.showUser(blog.servant_user_id, function(error, user) {
+        User.showUser(vendee.servant_user_id, function(error, user) {
 
             if (error || !user) return res.status(400).json({
                 message: 'Sorry, something went wrong'
@@ -315,7 +315,7 @@ var saveEmail = function(req, res, next) {
                 sort: {},
                 page: 1
             };
-            ServantSDK.queryArchetypes(user.servant_access_token, blog.servant_id, 'tag', criteria, function(error, response) {
+            ServantSDK.queryArchetypes(user.servant_access_token, vendee.servant_id, 'tag', criteria, function(error, response) {
 
                 if (error) return res.status(400).json({
                     message: 'Sorry, something went wrong'
@@ -329,10 +329,10 @@ var saveEmail = function(req, res, next) {
                 }
 
                 // If tag was found, save contact
-                if (tag) return saveContact(user.servant_access_token, blog.servant_id, tag);
+                if (tag) return saveContact(user.servant_access_token, vendee.servant_id, tag);
 
                 // Otherwise, Create tag
-                ServantSDK.saveArchetype(user.servant_access_token, blog.servant_id, 'tag', {
+                ServantSDK.saveArchetype(user.servant_access_token, vendee.servant_id, 'tag', {
                     tag: 'email-marketing-active'
                 }, function(error, response) {
 
@@ -340,7 +340,7 @@ var saveEmail = function(req, res, next) {
                         message: 'Sorry, something went wrong'
                     });
 
-                    return saveContact(user.servant_access_token, blog.servant_id, response);
+                    return saveContact(user.servant_access_token, vendee.servant_id, response);
 
                 });
             });
@@ -365,7 +365,7 @@ var logOut = function(req, res, next) {
 
 module.exports = {
     index: index,
-    loadBlogByServant: loadBlogByServant,
+    loadVendeeByServant: loadVendeeByServant,
     saveSettings: saveSettings,
     saveEmail: saveEmail,
     logOut: logOut

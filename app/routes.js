@@ -13,11 +13,11 @@ module.exports = function(app) {
     app.post('/api/servant/webhooks', servant.servantWebhooksCallback);
     app.post('/api/settings', application.saveSettings);
     app.post('/api/popup/email', application.saveEmail);
-    app.get('/api/blog/servant/:servantID', application.loadBlogByServant);
+    app.get('/api/vendee/servant/:servantID', application.loadVendeeByServant);
     app.get('/api/logout', application.logOut);
-    // Blog Routes
-    app.get('/articles/:articleID', middleware.checkBlog, application.index);
-    app.get('/articles', middleware.checkBlog, application.index);
-    app.get('/', middleware.checkBlog, application.index);
+    // Vendee Routes
+    app.get('/articles/:articleID', middleware.checkVendee, application.index);
+    app.get('/articles', middleware.checkVendee, application.index);
+    app.get('/', middleware.checkVendee, application.index);
 
 };

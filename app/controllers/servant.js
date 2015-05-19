@@ -4,7 +4,7 @@ var async = require('async'),
     shortid = require('shortid'),
     HelpersApp = require('../other/helpers_app'),
     Users = require('../models/user'),
-    ServantBlog = require('../models/servant_blog'),
+    Vendee = require('../models/vendee'),
     Config = require('../../config/config'),
     ServantSDK = require('../other/instance_servant_sdk');
 
@@ -47,20 +47,24 @@ var servantConnectCallback = function(req, res, next) {
                     error: error
                 });
 
+                console.log(error, data);
+
                 /**
-                 * Render Blog of User's first Servant
+                 * Render Vendee of User's first Servant
                  */
 
                 // TODO:  If User has not authorized any Servants, render error page via the HelpersApp.renderErrorPage()
 
-                ServantBlog.listServantBlogsByServant(response.servants[0]._id, function(error, blogs) {
+                Vendee.listVendeesByServant(response.servants[0]._id, function(error, vendees) {
+
+                    console.log(error, vendees);
 
                     if (error) return res.status(500).json({
                         error: error
                     });
 
-                    // Servant has blog, render it
-                    if (blogs && blogs.length) {
+                    // Servant has vendee, render it
+                    if (vendees && vendees.length) {
 
                         // Create User Session
                         req.session = {
@@ -70,8 +74,10 @@ var servantConnectCallback = function(req, res, next) {
                         return res.redirect('/');
                     }
 
-                    // Servant doesn't have a blog, create one
-                    HelpersApp.createServantBlog(response.servants[0], user.servant_user_id, function(error, blog) {
+                    // Servant doesn't have a vendee, create one
+                    HelpersApp.createVendee(response.servants[0], user.servant_user_id, function(error, vendee) {
+
+                        console.log(error, vendee)
 
                         if (error) return res.status(500).json({
                             error: error

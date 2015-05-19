@@ -16,7 +16,7 @@ var Users = {
 
     saveUser: function(user, callback) {
         var params = {
-            TableName: 'servantpress_users',
+            TableName: 'servantvendee_users',
             ReturnValues: 'NONE',
             Key: {
                 servant_user_id: user.servant_user_id
@@ -56,7 +56,7 @@ var Users = {
     showUser: function(servantUserID, callback) {
 
         var params = {};
-        params.TableName = "servantpress_users";
+        params.TableName = "servantvendee_users";
         params.Key = {
             servant_user_id: servantUserID
         };

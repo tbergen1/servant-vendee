@@ -2,20 +2,20 @@
 var Config = require('../../config/config'),
     HelpersApp = require('../other/helpers_app'),
     User = require('../models/user'),
-    ServantBlog = require('../models/servant_blog');
+    Vendee = require('../models/vendee');
 
 /**
- * Middleware: Check Blog
+ * Middleware: Check Vendee
  * - Detect Custom Domain, Subdomain
  */
 
-module.exports.checkBlog = function(req, res, next) {
+module.exports.checkVendee = function(req, res, next) {
 
     // Defaults
-    var blog_query = false;
+    var vendee_query = false;
     var domain = req.headers.host;
     var subdomain = domain.split('.');
-    req.blog = false;
+    req.vendee = false;
 
     /**
      * Check for custom domain or subdomain
@@ -29,56 +29,56 @@ module.exports.checkBlog = function(req, res, next) {
         host.indexOf('servant.press') === -1 &&
         host.indexOf('servantpress.io') === -1) {
 
-        // This is a blog via custom domain, render...
-        blog_query = {
+        // This is a vendee via custom domain, render...
+        vendee_query = {
             custom_domain: req.hostname
         };
 
     } else if (subdomain.length > 2 && subdomain[0] !== 'www' && subdomain[0] !== 'lvh' && subdomain[0] !== 'pro-env-bvfeuk8dpj') {
 
-        // This is a blog via subdomain, render...
-        blog_query = {
+        // This is a vendee via subdomain, render...
+        vendee_query = {
             subdomain: subdomain[0]
         };
 
     }
 
     /**
-     * Load Blog & User or continue
+     * Load Vendee & User or continue
      */
 
-    if (blog_query && blog_query.subdomain) {
+    if (vendee_query && vendee_query.subdomain) {
 
-        // Load Blog
-        ServantBlog.showServantBlog(blog_query, function(blog_error, blog) {
+        // Load Vendee
+        Vendee.showVendee(vendee_query, function(vendee_error, vendee) {
 
-            if (!blog || blog_error) return HelpersApp.renderErrorPage(res, "This blog could not be found.");
+            if (!vendee || vendee_error) return HelpersApp.renderErrorPage(res, "This vendee could not be found.");
 
-            // Load Blog User, get access token
-            User.showUser(blog.servant_user_id, function(user_error, user) {
+            // Load Vendee User, get access token
+            User.showUser(vendee.servant_user_id, function(user_error, user) {
 
                 if (!user || user_error) return HelpersApp.renderErrorPage(res, "Sorry, something went wrong.");
 
-                req.blog = blog;
+                req.vendee = vendee;
                 req.user = user;
                 return next();
 
             });
         });
 
-    } else if (blog_query && blog_query.custom_domain) {
+    } else if (vendee_query && vendee_query.custom_domain) {
 
-        // Load Blog
-        ServantBlog.listServantBlogsByCustomDomain(blog_query.custom_domain, function(blog_error, blogs) {
+        // Load Vendee
+        Vendee.listVendeesByCustomDomain(vendee_query.custom_domain, function(vendee_error, vendees) {
 
-            if (!blogs.length || blog_error) return HelpersApp.renderErrorPage(res, "This blog could not be found.");
+            if (!vendees.length || vendee_error) return HelpersApp.renderErrorPage(res, "This vendee could not be found.");
 
-            // Load Blog User, get access token
-            User.showUser(blogs[0].servant_user_id, function(user_error, user) {
+            // Load Vendee User, get access token
+            User.showUser(vendees[0].servant_user_id, function(user_error, user) {
 
                 if (!user || user_error) return HelpersApp.renderErrorPage(res, "Sorry, something went wrong.");
 
-                req.blog = blogs[0];
+                req.vendee = vendees[0];
                 req.user = user;
                 return next();
 

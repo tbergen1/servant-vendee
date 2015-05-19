@@ -19,7 +19,7 @@ var SubdomainIncrementer = {
             TableName: 'subdomain_incrementer',
             ReturnValues: 'ALL_NEW',
             Key: {
-                service: 'servant_press'
+                service: 'servant_vendee'
             },
             UpdateExpression: 'SET #a = #a + :number_val',
             ExpressionAttributeNames: {
