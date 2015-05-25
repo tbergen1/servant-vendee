@@ -433,6 +433,12 @@ a img {
     cursor: pointer;
 }
 
+/*Slider container*/
+
+#showcase-slider-container {
+    position: relative;
+    padding-top: 25px;
+}
 
 /* Vendee Themes */
 

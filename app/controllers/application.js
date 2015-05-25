@@ -71,14 +71,14 @@ var index = function(req, res) {
 
         // Define ServantAPI functions
         var getPosts = function(done) {
-            ServantSDK.archetypesRecent(req.user.servant_access_token_limited, req.vendee.servant_id, 'vendee_post', 1, function(error, response) {
+            ServantSDK.archetypesRecent(req.user.servant_access_token_limited, req.vendee.servant_id, 'product', 1, function(error, response) {
                 if (error) vendee_variables.preload.error = error;
                 else vendee_variables.preload.posts = response.records;
                 return done();
             });
         };
         var getPost = function(done) {
-            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'vendee_post', vendee_variables.article_id, function(error, response) {
+            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'product', vendee_variables.article_id, function(error, response) {
                 if (error) vendee_variables.preload.error = error;
                 else vendee_variables.preload.post = response;
                 return done();

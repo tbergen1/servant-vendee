@@ -214,10 +214,26 @@
             </div>
             <div class="row">
                 <div class="twelve columns">
-                    <p>asf</p>
-                    <p>asf</p>
-                    <p>asf</p>
-                    <p>asf</p>
+                    <% if (preload.posts && preload.posts.length) { %>
+                    
+                        <% for(i = 0; i < preload.posts.length; i++) { %>
+                            <% var html = '<div class="product">' %>
+                            <% if (preload.posts[i].images.length) html = html + '<img class="image" data-productID="' + preload.posts[i]._id + '" src="' + preload.posts[i].images[0].resolution_medium + '">' %>
+                            <% html = html + '<p class="name">' + preload.posts[i].name + '</p>' %>
+                            <% html = html + '<p class="price">$' + preload.posts[i].price / 100 + '</p>' %>
+                            <% html = html + '</div>' %>
+
+                            <% document.getElementById("products-container").appendChild(html) %>
+                        <% } %>
+                    <% } %>
+
+                    <div id="showcase-slider-container" style="display:none;">
+                        <!-- Products Scroll Buttons -->
+                        <i id="next-product" class="fa fa-chevron-right link"></i>
+                        <i id="prev-product" class="fa fa-chevron-left link"></i>
+                        <!-- Products Slider -->
+                        <div id="products-container" class="st-animate-bounce-in-up"></div>
+                    </div>
                 </div>
             </div>
             <div class="row"></div>

@@ -49,6 +49,14 @@ Theme.initialize = function() {
 
     }
 
+    Theme.data.slider = $('#products-container');
+        Theme.data.slider.slick({
+            nextArrow: $('#next-product'),
+            prevArrow: $('#prev-product')
+        });
+
+    $("#showcase-slider-container").show();
+
     // Initialize Popup
     if (Theme.data.popup && Theme.data.popup !== 'none') _this.initializePopup();
 
