@@ -21,6 +21,10 @@ Theme.data.menu = false;
 Theme.data.loading_products = false;
 Theme.data.more_products = true;
 
+Theme.data.oldIndex = 0;
+Theme.data.swipeCount = 0;
+Theme.data.currentPosition = 0;
+
 
 $(document).ready(function() {
 
@@ -38,24 +42,22 @@ Theme.initialize = function() {
     var _this = this;
     Theme.data.themes = Theme.data.themes.split(','); // These were added as one long string.  Convert to array.
 
-    // Initialize Vendee Products
-    if (!Theme.data.article_id) {
 
-        // Listener: Window Scroll
-        $(window).scroll(function() {
-            var difference = $('#content').height() - $(window).scrollTop();
-            if (difference < 1500) return _this.listProducts();
-        });
 
-    }
-
+    //Initialize Slick.js
     Theme.data.slider = $('#products-container');
-        Theme.data.slider.slick({
-            nextArrow: $('#next-product'),
-            prevArrow: $('#prev-product')
-        });
+    Theme.data.slider.slick({
+        nextArrow: $('#next-product'),
+        prevArrow: $('#prev-product')
+    });
 
     $("#showcase-slider-container").show();
+
+    //Monitor swipe position and add products
+    Theme.data.slider.on('afterChange', function(event, slick, currentSlide) {
+        Theme.data.currentPosition = currentSlide;
+        Theme._extendProducts(slick, currentSlide);
+    });
 
     // Initialize Popup
     if (Theme.data.popup && Theme.data.popup !== 'none') _this.initializePopup();
@@ -72,33 +74,20 @@ Theme.listProducts = function(callback) {
     // Check If More Products Are Available
     if (_this.data.loading_products || !_this.data.more_products) return;
 
-    // Set Loading True
-    _this.data.loading_products = true;
-    $('.loading').show();
-
     // Query Servant
     Servant.queryArchetypes(Theme.data.access_token, Theme.data.servant_id, 'product', _this.data.criteria, function(error, response) {
 
         if (error) console.log(error);
 
-        // Hide Loading Notice
-        $('.loading').hide();
-
         // Render Each Product
         for (i = 0; i < response.records.length; i++) {
-            _this.renderProduct(response.records[i])
+            _this.renderProducts(response.records[i])
         };
+
+        Theme.data.totalProducts = response.meta.count;
 
         // Increment Page
         _this.data.criteria.page = _this.data.criteria.page + 1;
-
-        // Check If More Posts
-        if (response.records.length < 10) _this.data.more_products = false;
-
-        // Set Loading False
-        setTimeout(function() {
-            _this.data.loading_products = false;
-        }, 1000);
 
         // Callback
         if (callback) return callback(response);
@@ -108,25 +97,17 @@ Theme.listProducts = function(callback) {
 
 
 
-Theme.renderProducts = function(post) {
-    var _this = this;
-    // Open Article Element
-    var html = '<article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">';
-    // Add Article Title
-    html = html + '<header class="entry-header"><h1 class="entry-title" itemprop="name">'
-    if (!Theme.data.custom_domain) html = html + '<a rel="bookmark" href="/articles/' + post._id + '">' + post.title + '</a>';
-    else html = html + '<a rel="bookmark" href="/articles/' + post._id + '">' + post.title + '</a>';
-    html = html + '</h1></header>';
-    // Add Snippet
-    var paragraphs = $(post.html).filter("p");
-    if (paragraphs[0].innerHTML) var snippet = paragraphs[0].innerHTML;
-    else if (paragraphs[1].innerHTML) var snippet = paragraphs[1].innerHTML;
-    else if (paragraphs[2].innerHTML) var snippet = paragraphs[2].innerHTML;
-    html = html + '<div class="entry-content"><p itemprop="description" itemprop="description">' + snippet + '</p></div>';
-    // Close Article Element
-    html = html + '</article>';
-    // Apped HTML
-    $('#main').append(html);
+Theme.renderProducts = function(product) {
+
+    // Create a string of the product's html
+    var html = '<div class="product">';
+    if (product.images.length) html = html + '<img class="image" data-productID="' + product._id + '" src="' + product.images[0].resolution_medium + '">';
+    html = html + '<p class="name">' + product.name + '</p>';
+    html = html + '<p class="price">$' + product.price / 100 + '</p>';
+    html = html + '</div>';
+
+    // Append to products inside of slider
+    Theme.data.slider.slick('slickAdd', html);
 };
 
 Theme.loadLogoImage = function(imageID) {
@@ -247,5 +228,35 @@ Theme.hideModal = function(cookieKey, cookieValue, cookieExpires) {
     }
 };
 
+/**
+ * Add More Products
+ * - Determines distance from end of carousel and adds more products
+ */
+
+Theme._extendProducts = function(slick, currentSlide) {
+
+    var detectThreshold = slick.slideCount - slick.currentSlide;
+    var slideDirection = slick.currentSlide - Theme.data.oldIndex;
+    var numPages = Math.ceil(Theme.data.totalProducts / 10);
+
+    //Determine swipe direction and record position relative to origin
+    if (slideDirection > 0) Theme.data.swipeCount++;
+    else if (slideDirection < 0) Theme.data.swipeCount--;
+
+    //Reset position relative to origin if origin is visited
+    if (slick.currentSlide === 0) Theme.data.swipeCount = 0;
+
+    //Stop additional product requests when page limit exceeded
+    if (Theme.data.criteria.page > numPages) return false;
+
+    //Render next page of products if criteria met
+    if (detectThreshold === 3 && slideDirection > 0 && Theme.data.swipeCount === slick.slideCount - 3) Theme.listProducts(function() {
+
+        Theme.data.oldIndex = slick.currentSlide;
+
+    });
+
+    else Theme.data.oldIndex = slick.currentSlide;
+};
 
 // End

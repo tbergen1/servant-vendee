@@ -124,7 +124,7 @@ var index = function(req, res) {
 var loadVendeeByServant = function(req, res, next) {
 
     // Defaults
-    var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:8080';
+    var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:' + Config.port;
 
     Vendee.listVendeesByServant(req.params.servantID, function(error, vendees) {
 
@@ -150,7 +150,7 @@ var loadVendeeByServant = function(req, res, next) {
                 });
 
                 // Render
-                var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:8080';
+                var host = process.env.NODE_ENV === 'production' ? 'servantpress.io' : 'lvh.me:' + Config.port;
                 res.redirect(req.protocol + '://' + vendee.subdomain + '.' + host);
 
             });
