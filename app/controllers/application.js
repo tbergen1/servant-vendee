@@ -43,7 +43,7 @@ var index = function(req, res) {
         authenticated: null,
         vendee: req.vendee ? req.vendee : {},
         user: req.user ? req.user : {},
-        article_id: req.params.articleID ? req.params.articleID : null
+        product_id: req.params.productID ? req.params.productID : null
     };
     // If vendee, session and vendee is owned by user session, mark authenticated
     if (req.vendee && req.session.user && req.vendee.servant_user_id === req.session.user.servant_user_id) vendee_variables.authenticated = true;
@@ -78,7 +78,7 @@ var index = function(req, res) {
             });
         };
         var getPost = function(done) {
-            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'product', vendee_variables.article_id, function(error, response) {
+            ServantSDK.showArchetype(req.user.servant_access_token_limited, req.vendee.servant_id, 'product', vendee_variables.product_id, function(error, response) {
                 if (error) vendee_variables.preload.error = error;
                 else vendee_variables.preload.post = response;
                 return done();
@@ -94,8 +94,8 @@ var index = function(req, res) {
 
         var tasks = [];
 
-        if (!vendee_variables.article_id) tasks.push(getPosts);
-        if (vendee_variables.article_id) tasks.push(getPost);
+        if (!vendee_variables.product_id) tasks.push(getPosts);
+        if (vendee_variables.product_id) tasks.push(getPost);
         if (vendee_variables.vendee.logo_image) tasks.push(getLogo);
 
         console.time('ServantAPI: Calls');

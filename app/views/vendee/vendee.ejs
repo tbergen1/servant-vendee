@@ -214,6 +214,10 @@
             </div>
             <div class="row">
                 <div class="twelve columns">
+
+                    <!-- List Product Previews -->
+                    <% if (!preload.error && !product_id) { %>
+
                     <div id="showcase-slider-container" style="display:none;">
         
                     <!-- Products Scroll Buttons -->
@@ -223,15 +227,19 @@
                     <!-- Products Slider -->
                     <div id="products-container" class="st-animate-bounce-in-up">
                     <% if (preload.posts && preload.posts.length) { %>
-
-                        <% for(i = 0; i < preload.posts.length; i++) { %>
+                        <% var posts = preload.posts %>
+                        <% for(i = 0; i < posts.length; i++) { %>
                     
                             <div class="product">
-                            <% if (preload.posts[i].images.length) { %> 
-                            <img class="image" data-productID="<%= preload.posts[i]._id %> + '" src="<%= preload.posts[i].images[0].resolution_medium %>">
+                            <% if (posts[i].images.length) { %> 
+                            <img class="image" data-productID="<%= posts[i]._id %>" src="<%= posts[i].images[0].resolution_medium %>">
                             <% } %>
-                            <p class="name"><%= preload.posts[i].name %></p>
-                            <p class="price"><%= preload.posts[i].price %></p>
+                            <p class="name">
+                                <a rel="bookmark" href="/products/<%= posts[i]._id %>">
+                                    <%= posts[i].name %>
+                                </a>
+                            </p>
+                            <p class="price"><%= posts[i].price %></p>
                             </div>
 
                         <% } %>
@@ -239,6 +247,29 @@
                     <% } %>
                     </div>
                     </div>
+
+                    <% } %>
+
+                    <!-- Show Individual Product -->
+                    <% if (!preload.error && product_id) { %>
+                        <% if (preload.post) { %>
+                            <% var post = preload.post %>
+                            <article class="post hentry format-standard" itemscope itemtype="http://schema.org/Article">
+                                <header class="entry-header">
+                                    <h1 class="entry-title" itemprop="name">
+                                        <%= post.name %>
+                                    </h1>
+                                </header>
+                                <div class="entry-content">
+                                    <% if (post.images.length) { %>
+                                    <img class="image" data-productID="<%= post._id %>" src="<%= post.images[0].resolution_medium %>">
+                                    <% } %>
+                                    <p class="price"><%= post.price %></p>
+                                </div>
+                            </article>
+                        <% } %>
+                    <% } %>
+
                 </div>
             </div>
         </div>
@@ -247,3 +278,9 @@
 </body>
 
 </html>
+
+
+
+
+
+                    

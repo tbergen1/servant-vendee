@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 
 <!-- Title -->
-<title><% if (!article_id) { %><%= vendee.vendee_title %> - <%= vendee.vendee_description %><% } %><% if (article_id) { %><%= preload.post ? preload.post.title : 'Article Not Found' %><% } %> - <%= vendee.vendee_title %></title>
+<title><% if (!product_id) { %><%= vendee.vendee_title %> - <%= vendee.vendee_description %><% } %><% if (product_id) { %><%= preload.post ? preload.post.title : 'Article Not Found' %><% } %> - <%= vendee.vendee_title %></title>
 
 <!-- Mobile Specific Metas -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,7 +9,7 @@
 <% if (vendee.custom_domain) { vendee.host = 'http://' + vendee.custom_domain; }
 else { vendee.host = 'http://' + vendee.subdomain + '.servantpress.io'; } %>
 
-<% if (!article_id) { %>
+<% if (!product_id) { %>
     <!-- SEO – Main Page -->
     <link rel="canonical" href="<%= vendee.host %>" />
     <meta name="description" content="<%= vendee.vendee_description %>">
@@ -29,9 +29,9 @@ else { vendee.host = 'http://' + vendee.subdomain + '.servantpress.io'; } %>
     <meta name="twitter:image:src" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>"/>
 <% } %>
 
-<% if (article_id) { %>
+<% if (product_id) { %>
     <!-- SEO – Article Page -->
-    <link rel="canonical" href="<%= vendee.host %>/articles/<%= article_id %>" />
+    <link rel="canonical" href="<%= vendee.host %>/articles/<%= product_id %>" />
     <meta name="description" content="<%= preload.post ? preload.post.plaintext.substring(0, (preload.post.plaintext.indexOf('.') > 0 && preload.post.plaintext.indexOf('.') < 100 ? preload.post.plaintext.indexOf('.') : 100)) + '...' : vendee.vendee_title %>">
     <meta name="keywords" content="<%= preload.post ? preload.post.title.replace(/[^\w\s]/gi, '').split(' ').join(',') : vendee.vendee_keywords %>" )>
     <!-- Facebook -->
@@ -39,7 +39,7 @@ else { vendee.host = 'http://' + vendee.subdomain + '.servantpress.io'; } %>
     <meta name="og:type" property="og:type" content="article" />
     <meta name="og:title" property="og:title" content="<%= preload.post ?  preload.post.title : '' %>  - <%= vendee.vendee_title %>" />
     <meta name="og:description" property="og:description" content="<%= preload.post ? preload.post.plaintext.substring(0, (preload.post.plaintext.indexOf('.') > 0 && preload.post.plaintext.indexOf('.') < 100 ? preload.post.plaintext.indexOf('.') : 100)) + '...' : vendee.vendee_description %>" />
-    <meta name="og:url" property="og:url" content="<%= vendee.host %>/articles/<%= article_id %>" />
+    <meta name="og:url" property="og:url" content="<%= vendee.host %>/articles/<%= product_id %>" />
     <meta name="og:site_name" property="og:site_name" content="<%= preload.post ? preload.post.title : '' %>  - <%= vendee.vendee_title %>" />
     <meta property="article:tag" content="<%= preload.post ? preload.post.title.replace(/[^\w\s]/gi, '').split(' ').join(',') : vendee.vendee_keywords.split(" ").join(',').replace(',,', ',') %>" />
     <meta property="og:image" content="<%= preload.logo ? preload.logo.resolution_medium : '' %>" />
